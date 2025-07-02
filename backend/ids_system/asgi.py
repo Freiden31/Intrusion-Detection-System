@@ -1,18 +1,3 @@
-"""
-ASGI config for ids_system project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
-"""
-
-import os
- 
-from django.core.asgi import get_asgi_application
-
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ids_system.settings')
-
-application = get_asgi_application()
-    
+version https://git-lfs.github.com/spec/v1
+oid sha256:1442485a0286f9200db9ae592a6ed4ebc859bf650f58d688cacb4391d4429e2e
+size 420

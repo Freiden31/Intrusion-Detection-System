@@ -1,16 +1,3 @@
-"""
-WSGI config for ids_system project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
-"""
-
-import os
-
-from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ids_system.settings')
-
-application = get_wsgi_application()
+version https://git-lfs.github.com/spec/v1
+oid sha256:833c59a9c13d97ce645fbb83580d0b0783bed5bbee68395c510bd30dc17ca347
+size 413
