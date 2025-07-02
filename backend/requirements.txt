@@ -1,0 +1,11 @@
+django
+python-dotenv
+django-cors-headers
+djangorestframework
+jwt
+dj-rest-auth
+django-allauth
+psycopg2
+dj-database-url
+Pillow
+requests

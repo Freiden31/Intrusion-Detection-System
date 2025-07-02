@@ -1,0 +1,14 @@
+/* styles.css (or inside a global CSS file) */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: none;  /* Dark track */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a;  /* Scrollbar thumb */
+  border-radius: 5px; /* Optional border */
+}
+
