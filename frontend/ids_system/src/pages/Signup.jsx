@@ -86,8 +86,7 @@ const Signup = () => {
                                         alignItems: 'center',
                                         justifyContent: 'justify',
                                         textAlign: 'justify',
-                                        letterSpacing: '.10em',
-                                        height: '6rem'              
+                                        letterSpacing: '.10em',            
                                     }}
                                     severity="error"
                                 >
@@ -108,8 +107,7 @@ const Signup = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    letterSpacing: '.10em',
-                                    height: '6rem'           
+                                    letterSpacing: '.10em',      
                                 }} 
                                 severity="success"
                             >

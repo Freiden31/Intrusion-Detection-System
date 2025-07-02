@@ -96,8 +96,7 @@ const Signin = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    letterSpacing: '.10em',
-                                    height: '4rem'              
+                                    letterSpacing: '.10em',           
                                 }}
                                 severity="error"
                             >

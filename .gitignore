@@ -1,1 +1,4 @@
-backend/ml_model/model_selected_features.joblib
+backend/.env
+venv
+
+frontend/ids_system/.env
