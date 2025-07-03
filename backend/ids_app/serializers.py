@@ -1,10 +1,6 @@
 from rest_framework import serializers, status
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
+from django.contrib.auth.password_validation import validate_password
 
 from .models import User
 
@@ -34,13 +30,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         if password['password'] != password['confirm_password']:
             raise serializers.ValidationError({"error": "Password do not match!"}, status=status.HTTP_400_BAD_REQUEST)
         return password
-    
-    def create(self, validated_data):
-        validated_data.pop('confirm_password')
-        user = User.objects.create_user(**validated_data)
-        user.is_active = False
-        user.save()
 
-        # Send activation link to user email
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
 
-        request = self.context.get('request')
+class RequestResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+class PaswordResetConfirmSerializer(serializers.Serializer):
+    new_password = serializers.CharField(write_only=True)
+    confirm_new_password = serializers.CharField(write_only=True)
+
+    def validate(self, new_password):
+        if new_password['new_password'] != new_password['confirm_new_password']:
+            serializers.ValidationError({"error": "Password do not match!"}, status=status.HTTP_400_BAD_REQUEST)
+        validate_password(new_password['new_password'])
+        return new_password 
