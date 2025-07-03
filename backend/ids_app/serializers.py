@@ -1,1 +1,46 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
+from .models import User
+
+
+User = get_user_model()
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'password', 'confirm_password']
+    
+    # Validate username, email if already exists
+
+    def validate_username(self, username):
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError({"error": "Username already exists!"}, status=status.HTTP_400_BAD_REQUEST)
+        return username
+    
+    def validate_email(self, email):
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError({"error": "Email alreay exists!"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def validate_password(self, password):
+        if password['password'] != password['confirm_password']:
+            raise serializers.ValidationError({"error": "Password do not match!"}, status=status.HTTP_400_BAD_REQUEST)
+        return password
+    
+    def create(self, validated_data):
+        validated_data.pop('confirm_password')
+        user = User.objects.create_user(**validated_data)
+        user.is_active = False
+        user.save()
+
+        # Send activation link to user email
+
+        request = self.context.get('request')
