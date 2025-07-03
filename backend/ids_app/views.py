@@ -56,4 +56,21 @@ class ActivateUserView(APIView):
             user.save()
             return Response({"message": "Account activated successfully!"})
         return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
-    
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        try:
+            if serializer.is_valid():
+                user = authenticate(
+                    username=serializer.validated_data['username'],
+                    password=serializer.validated_data['password']
+                )
+                if user:
+                    if not user.is_active:
+                        return Response({"error": "Account not activated!"}, status=status.HTTP_403_FORBIDDEN)
+                    return Response({"message": "Login successfully!"})
+                return Response({"error": "Invalid credentials!"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": "An error occured!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
