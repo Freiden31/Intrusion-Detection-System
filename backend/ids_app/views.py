@@ -74,3 +74,50 @@ class LoginView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": "An error occured!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class RequestPasswordReset(APIView):
+    def post(self, request):
+        serializer = RequestResetSerializer(data=request.data)
+
+        try:
+            if serializer.is_valid():
+                email = serializer.validated_data['email']
+
+                try:
+                    user = User.objects.get(email=email)
+                except User.DoesNotExist:
+                    return Response({"error": "Email does not exist!"}, status=status.HTTP_400_BAD_REQUEST)
+                
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            reset_link = f"http://{request.get_host()}/api/account/reset-password/{uid}/{token}"  # Must check sooner
+
+            messages = f"Hi {user.username}, \n\n Click the link below to reset your password: \n{reset_link}\n\nThank you!"
+            
+            try:
+                send_mail("Password Reset", messages, None, [user.email])
+                return Response({"message": "Reset password link was sent!"}, status=status.HTTP_200_OK)
+            except:
+                return Response({"error": "Internal Error!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except (ValueError, User.DoesNotExist, TypeError):
+            return Response({"error": "Internale Error!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class PasswordResetConfirm(APIView):
+    def post(self, request, uidb64, token):
+        
+        try:
+            uid = urlsafe_base64_decode(force_str(uidb64))
+            user = User.objects.get(pk=uid)
+        except User.DoesNotExist:
+            return Response({"error": "Invalid Link!"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = PaswordResetConfirmSerializer(data=request.data)
+        
+        try:
+            if serializer.is_valid():
+                user.set_password(serializer.validated_data["new_password"])
+                user.save()
+                return Response({"message": "New password crated successfully!"}, status=status.HTTP_201_CREATED)
+        except:
+            return Response({"error": "Internal Error!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
