@@ -2,10 +2,12 @@ from rest_framework import serializers, status
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 
-from .models import User
+from .models import User, Server, Packets
 
 
 User = get_user_model()
+
+# User Authentication
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -46,4 +48,20 @@ class PaswordResetConfirmSerializer(serializers.Serializer):
         if new_password['new_password'] != new_password['confirm_new_password']:
             serializers.ValidationError({"error": "Password do not match!"}, status=status.HTTP_400_BAD_REQUEST)
         validate_password(new_password['new_password'])
-        return new_password 
+        return new_password
+
+
+# Server Connection
+class ServerSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Server
+        fields = ['host', 'username', 'password']
+
+
+class PacketsSerializer(serializers.ModelSerializer):
+    server = serializers.CharField(read_only=True)
+    class Meta:
+        model = Packets
+        fields = '__all__'

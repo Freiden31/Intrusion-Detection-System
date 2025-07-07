@@ -30,7 +30,7 @@ class RegisterView(APIView):
                 )
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = default_token_generator.make_token(user)
-                activation_link = f"http://{request.get_host()}/api/activate/{uid}/{token}/" # must check for url match
+                activation_link = f"http://localhost:3000/api/activate/{uid}/{token}/" # must check for url match
 
                 message = f"Hi {user.username},\n\nPlease activate your account by clicking the link below:\n{activation_link}\n\nThank you!"
                 
@@ -75,7 +75,7 @@ class LoginView(APIView):
         except Exception as e:
             return Response({"error": "An error occured!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class RequestPasswordReset(APIView):
+class RequestPasswordResetView(APIView):
     def post(self, request):
         serializer = RequestResetSerializer(data=request.data)
 
@@ -90,7 +90,7 @@ class RequestPasswordReset(APIView):
                 
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            reset_link = f"http://{request.get_host()}/api/account/reset-password/{uid}/{token}"  # Must check sooner
+            reset_link = f"http://localhost:3000/api/account/reset-password/{uid}/{token}"  # Must check sooner
 
             messages = f"Hi {user.username}, \n\n Click the link below to reset your password: \n{reset_link}\n\nThank you!"
             
@@ -103,7 +103,7 @@ class RequestPasswordReset(APIView):
             return Response({"error": "Internale Error!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class PasswordResetConfirm(APIView):
+class PasswordResetConfirmView(APIView):
     def post(self, request, uidb64, token):
         
         try:
