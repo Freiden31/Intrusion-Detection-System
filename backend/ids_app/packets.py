@@ -1,6 +1,41 @@
-
+import threading
+import time
+import paramiko
+import joblib
+import pandas as pd
 import numpy as np
+from .models import Packets
 
+monitoring_active = False
+monitor_thread = None
+ssh_client = None
+ssh_config = {}
+
+selected_features = joblib.load('ml_model/selected_features.pkl')
+ml_model = joblib.load('ml_model/model_selected_features.joblib')
+
+def set_ssh_credentials(host, username, password):
+    global ssh_config
+    ssh_config = {
+        'host': host,
+        'username': username,
+        'password': password
+    }
+
+def setup_ssh():
+    global ssh_client, ssh_config
+    ssh_client = paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh_client.connect(
+        ssh_config['hostname'],
+        username=ssh_config['username'],
+        password=ssh_config['password']
+    )
+    return ssh_client
+
+def run_command(ssh, cmd):
+    stdin, stdout, _ = ssh.exec_command(cmd)
+    return stdout.read().decode()
 
 
 def parse_flags(flags_str):
@@ -95,5 +130,8 @@ def compute_flow_features(pkts):
     bwd_header_length = 40
 
     return {
-        'Flow Duration': flow_duration,
+        'flow_drt': flow_duration,
+        'ttl_fwd_packets':
+        'ttl_bwd_packets':
+        'fwd_packets_length_ttl'
     }
