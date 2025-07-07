@@ -1,6 +1,6 @@
 # Real-Time Network Traffic Classification for Anomaly Detection
 
-A cyber security for final year aim to develop a  real-time network traffic classification to detect anomalous behavior of packet in a server network. This detect threshold such:
+A cyber security project for final year aim to develop a  real-time network traffic classification to detect anomalous behavior of packet in a server network. This detect threshold such:
  - Distributed Denial of Service (DDoS),
  - Denial of Service (DoS),
  - Infiltration,
@@ -10,7 +10,7 @@ A cyber security for final year aim to develop a  real-time network traffic clas
 
 By training machine learning algorithms to select the best performing one Random Forest outperformed Decision Tree, Logistic Regression, and Naive Bayes with 97 percent ( of 70% train set ), 88 percent ( of 30% test set ), and 89 percent ( of 5-folds Cross- Validation ) for unseen data injected with 10 percent noise - from CIC-IDS 2017 dataset.
 
-The system development through the specification of Reactjs ( JavaScript library ) for frontend, Django ( Python backend framework ), and Tailwindcss ( CSS framework ).
+The system develop through the specification of Reactjs ( JavaScript library ) for frontend, Django ( Python backend framework ), and Tailwindcss ( CSS framework ).
 
 The system features are:
 - Authentication ( Email Backend )
