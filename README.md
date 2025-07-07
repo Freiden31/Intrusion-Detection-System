@@ -23,3 +23,7 @@ The system features are:
   * Rythm Graph
 - Notification
 - Report
+
+# AUTHENTICATION 1/3
+
+![Screenshot (322)](https://github.com/user-attachments/assets/49a33482-4fd5-457d-ada3-0957c66997dc)
