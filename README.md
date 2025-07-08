@@ -8,9 +8,11 @@ A cyber security project for final year aim to develop a  real-time network traf
  - Brute force, and
  - Bot Net.
 
+Note: '''The system classify if safe or anomaly.'''
+
 By training machine learning algorithms to select the best performing one Random Forest outperformed Decision Tree, Logistic Regression, and Naive Bayes with 97 percent ( of 70% train set ), 88 percent ( of 30% test set ), and 89 percent ( of 5-folds Cross- Validation ) for unseen data injected with 10 percent noise - from CIC-IDS 2017 dataset.
 
-The system develop through the specification of Reactjs ( JavaScript library ) for frontend, Django ( Python backend framework ), and Tailwindcss and MaterialUI ( CSS framework ).
+The system develop through the specification of Reactjs ( JavaScript library ) for frontend, Django ( Python backend framework ), Tailwindcss, and MaterialUI ( CSS framework ).
 
 The system features are:
 - Authentication ( Email Backend )
