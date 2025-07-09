@@ -28,10 +28,12 @@ The system features are:
 
 # AUTHENTICATION 1/3 - REGISTRATION FORM
 * New user is require to create and register account to proceed to the main page for monitoring server network
+
 ![Screenshot (332)](https://github.com/user-attachments/assets/9e444f3f-8228-4e24-8231-b5a68e415432)
 
 # AUTHENTICATION 2/3 - LOGIN FORM
 * If user have already an account he can use this form for authenticaion.
+
 ![Screenshot (322)](https://github.com/user-attachments/assets/49a33482-4fd5-457d-ada3-0957c66997dc)
 
 # HOME PAGE
@@ -39,11 +41,11 @@ The system features are:
 
 # SERVER CREDENTIAL
 * To monitor server network the user should have full consent and permission of the company or server owner.
+
 ![Screenshot (334)](https://github.com/user-attachments/assets/71543500-a2b5-410d-b4cf-3789043e66f4)
 
 # MONITORING PAGE
-![Uploading Screenshot (335).png…]()
-
+![Screenshot (335)](https://github.com/user-attachments/assets/39476249-8e8e-4ad9-ad82-09d6811fcb3f)
 
 
 
