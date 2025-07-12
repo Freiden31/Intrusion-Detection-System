@@ -1,6 +1,0 @@
-django
-djangorestframework
-axios
-mysqlclient
-python-dotenv
-joblib
