@@ -115,14 +115,13 @@ const Signup = () => {
                             </Alert>                            
                         </div>
                     )}
-                <div className='bg-[rgba(17,24,39,0.9)] flex flex-col items-center justify-center h-[630px] w-[28rem] p-6 rounded-[2px] text-gray-300'>
+                <div className='bg-[rgba(17,24,39,0.9)] flex flex-col items-center justify-center h-[550px] w-[28rem] p-6 rounded-[2px] text-gray-300'>
                     
-                    <div className="mb-6 gap-4">
+                    <div className=" gap-4">
                         <h4 className="font-bold text-[16px] tracking-[.10em] mb-2">Get Started!</h4>
-                        <p className="text-[12px]">Use your social profile to register.</p>
                     </div>
 
-                    {/* start: social app authentication */}
+                    {/* start: social app authentication
                     <div className=" w-full flex items-center justify-center gap-4 mb-4">
                         <div style={{ width: '290px', fontFamily: "Share Tech"  }}>
                             <GoogleLogin
@@ -134,13 +133,7 @@ const Signup = () => {
                             />
                         </div>
                     </div>
-                    {/* end: social app authentication */}
-
-                    <div className="w-full flex items-center justify-center gap-4">
-                        <hr className="h-[.5px] w-[112px] bg-white" /> 
-                        <h5 className="text-[12px]">or</h5> 
-                        <hr className="h-[.5px] w-[112px] bg-white" />
-                    </div>
+                     end: social app authentication */}
 
                     <form className="w-full mt-2" onSubmit={handleSubmit}>
                         <div className="flex flex-col items-center justify-center gap-2">

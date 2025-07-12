@@ -105,39 +105,15 @@ const Signin = () => {
                         </div>
                 )}
                 
-                <div className='bg-[rgba(17,24,39,0.9)] flex flex-col items-center justify-center h-[480px] w-[28rem] p-6 rounded-[2px] text-gray-300'>
+                <div className='bg-[rgba(17,24,39,0.9)] flex flex-col items-center justify-center h-[410px] w-[28rem] p-6 rounded-[2px] text-gray-300'>
                     
-                    <div className="mb-6 gap-4">
-                        <h4 className="font-bold text-[16px] tracking-[.10em] mb-2">
+                    <div className="mb-4 gap-4">
+                        <h4 className="font-bold text-[16px] tracking-[.10em]">
                             Welcome!
                         </h4>
-                        <p className="text-[12px]">
-                            Use your social profile to login.
-                        </p>
                     </div>
 
-                    {/* start: social app authentication */}
-                    <div className=" w-full flex items-center justify-center gap-4 mb-4">
-                        <div style={{ width: '290px', fontFamily: "Share Tech"  }}>
-                            <GoogleLogin
-                                onSuccess={handleSuccess}
-                                onError={() => console.log('Login Failed')}
-                                size="medium"
-                                shape="rectangular"
-                                theme="outline"
-                            >
-                            </GoogleLogin>
-                        </div>
-                    </div>
-                    {/* end: social app authentication */}
-
-                     <div className="w-full flex items-center justify-center gap-4">
-                        <hr className="h-[.5px] w-[124px] bg-white" />
-                        <h5 className="text-[12px]">or</h5> 
-                        <hr className="h-[.5px] w-[124px] bg-white" />
-                    </div>
-
-                    <form className="w-full mt-2" onSubmit={handleSubmit}>
+                    <form className="w-full" onSubmit={handleSubmit}>
                         <div className="flex flex-col items-center justify-center gap-2">
                                 <input 
                                     name="username"

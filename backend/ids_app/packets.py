@@ -124,14 +124,109 @@ def compute_flow_features(pkts):
 
     fwd_act_data_pkts = sum(1 for p in fwd_pkts if p['tcp_len'] > 0)
     fwd_seg_size_min = np.min([p['tcp_len'] for p in fwd_pkts]) if total_fwd_pkts > 0 else 0
-    active_mine = flow_iats_min
+    active_min = flow_iats_min
 
     fwd_header_length = 40
     bwd_header_length = 40
 
     return {
-        'flow_drt': flow_duration,
-        'ttl_fwd_packets':
-        'ttl_bwd_packets':
-        'fwd_packets_length_ttl'
+        'flow_drt' : flow_duration,
+        'ttl_fwd_packets' : total_fwd_pkts,
+        'ttl_bwd_packets' : total_bwd_pkts,
+        'fwd_packets_length_ttl' : np.sum(fwd_lens),
+        'bwd_packet_length_ttl' : np.sum(bwd_lens),
+        'fwd_packets_length_max' : fwd_len_max, 
+        'fwd_packets_length_mean' : fwd_len_mean, 
+        'fwd_packets_length_std': fwd_len_std,
+        'bwd_packet_length_max': bwd_len_max,
+        'bwd_packet_length_mean': bwd_len_mean,
+        'flow_packets': flow_bytes_per_s,
+        'flow_iat_mean': flow_iats_mean,
+        'flow_iat_std': flow_iats_std,
+        'flow_iat_max': flow_iats_max,
+        'fwd_iat_total': fwd_iat_total,
+        'fwd_iat_mean': fwd_iat_mean,
+        'fwd_iat_std': fwd_iat_std,
+        'fwd_iat_max': fwd_iat_max,
+        'fwd_iat_min': fwd_iat_min,
+        'bwd_iat_total': bwd_iat_total,
+        'bwd_iat_mean': bwd_iat_mean,
+        'psh_flag_count': psh_flag_count,
+        'subflow_bwd_bytes': subflow_bwd_bytes,
+        'fwd_header_length': fwd_header_length,
+        'bwd_header_length': bwd_header_length,
+        'fwd_packets': total_fwd_pkts / flow_duration if flow_duration > 0 else 0,
+        'bwd_packets': total_bwd_pkts / flow_duration if flow_duration > 0 else 0,
+        'packet_length_max': np.max(lengths),
+        'packet_length_mean': np.mean(lengths),
+        'packet_legnth_std': np.std(lengths),
+        'packcet_length_vairiance': np.var(lengths),
+        'avg_packet_size': np.mean(lengths),
+        'avg_fwd_segment_size': fwd_len_mean,
+        'avg_bwd_segment_size': bwd_len_mean,
+        'subflow_fwd_bytes': subflow_fwd_bytes,
+        'subflow_bwd_packets': subflow_bwd_pkts,
+        'init_fwd_win_bytes': init_fwd_win_bytes,
+        'init_bwd_win_bytes': init_bwd_win_bytes,
+        'fwd_act_data_packets': fwd_act_data_pkts,
+        'fwd_seg_size_min': fwd_seg_size_min,
+        'active_min': active_min,
     }
+
+def capture_packets(ssh):
+    tshark_cmd = (
+        "sudo tshark -i eth0 -a duraction -q -T fields"
+        "-e frame.time_relative -e ip.src -e ip.dst -e tcp.srcport -e dst.port"
+        "-e ip.proto -e frame.len -e tcp.flags -e tcp.window_size -e tcp.len"
+        "e ip.ttl -e tcp.analysis.retransmission"
+        "-E separator=, -E aggregator=none"
+    )
+
+    raw = run_command(ssh, tshark_cmd)
+    packets = []
+    for line in raw.splitlines():
+        parts = line.strip().split(',')
+        if len(parts) < 8:
+            continue
+        try:
+            pkt = {
+                'time': float(parts[0]),
+                'src_ip': parts[1],
+                'dst_ip': parts[2],
+                'src_port': int(parts[3]) if parts[3] else 0,
+                'dst_port': int(parts[4]) if parts[4] else 0,
+                'proto': int(parts[5]) if parts[5] else 0,
+                'len': float(parts[6]) if parts[6] else 0,
+                'flags': parse_flags(parts[7] if parts[7] else '0x0'),
+                'window_size': int(parts[8]) if len(parts) > 8 and parts[8] else 0,
+                'tcp_len': float(parts[9]) if len(parts) > 9 and parts[9] else 0,
+                'ip_ttl': int(parts[10]) if len(parts) > 10 and parts[10] else 0,
+                'tcp_retrans': int(parts[11]) if len(parts) > 11 and parts[11] == '1' else 0
+            }
+            packets.append(pkt)
+        except Exception:
+                continue
+    return packets
+
+
+def monitoring_loop():
+    global monitoring_active
+    while monitoring_active:
+        packets = capture_packets()
+        flows = {}
+        for pkt in packets:
+            add_packet_to_flow(flows, pkt)
+        for flow_key, pkts in flows.items():
+            features = compute_flow_features(pkts)
+            try:
+                input_df = pd.DataFrame([features])[selected_features]
+                prediction = ml_model.predict(input)[0]
+            except Exception:
+                prediction = "Unknown" # Error
+            
+            Packets.objects.create(
+                flow_key=str(flow_key),
+                prediction=prediction,
+                **features
+            )
+        time.sleep(1)

@@ -17,6 +17,9 @@ class Server(models.Model):
 class Packets(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE)
 
+    flow_key = models.CharField(max_length=255, null=True, blank=True)
+    prediction = models.CharField(max_length=50, null=True, blank=True)
+
     timestamp = models.DateTimeField(auto_now_add=True)
     src_ip = models.GenericIPAddressField()
     dst_ip = models.GenericIPAddressField()
