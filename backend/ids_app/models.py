@@ -56,6 +56,8 @@ class Packets(models.Model):
     packet_legnth_std = models.FloatField()
     packcet_length_vairiance = models.FloatField()
     avg_packet_size = models.FloatField()
+    total_bytes = models.BigIntegerField(default=0)
+    total_mb = models.FloatField(default=0.0)
     avg_fwd_segment_size = models.FloatField()
     avg_bwd_segment_size = models.FloatField()
     subflow_fwd_bytes = models.FloatField()

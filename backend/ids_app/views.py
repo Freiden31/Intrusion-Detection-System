@@ -3,13 +3,20 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
-from django.template.loader import render_to_string
 
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import RegisterSerializer, LoginSerializer, RequestResetSerializer, PaswordResetConfirmSerializer
+from .serializers import (
+    RegisterSerializer, 
+    LoginSerializer, 
+    RequestResetSerializer, 
+    PaswordResetConfirmSerializer, 
+    ServerSerializer,
+    PacketsSerializer,
+)
 
 
 User = get_user_model()
@@ -54,7 +61,7 @@ class ActivateUserView(APIView):
         if default_token_generator.check_token(user, token):
             user.is_active=True
             user.save()
-            return Response({"message": "Account activated successfully!"})
+            return Response({"message": "Account activated successfully!"}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
@@ -69,7 +76,7 @@ class LoginView(APIView):
                 if user:
                     if not user.is_active:
                         return Response({"error": "Account not activated!"}, status=status.HTTP_403_FORBIDDEN)
-                    return Response({"message": "Login successfully!"})
+                    return Response({"message": "Login successfully!"}, status=status.HTTP_200_OK)
                 return Response({"error": "Invalid credentials!"}, status=status.HTTP_401_UNAUTHORIZED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
@@ -121,3 +128,42 @@ class PasswordResetConfirmView(APIView):
                 return Response({"message": "New password crated successfully!"}, status=status.HTTP_201_CREATED)
         except:
             return Response({"error": "Internal Error!"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+from .packets import (
+    set_ssh_credentials,
+    start_monitoring, 
+    pause_monitoring, 
+    disconnect_ssh
+)
+from .models import Packets
+
+
+class StartMonitoringView(APIView):
+    def post(self, request):
+        serializer = ServerSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            set_ssh_credentials(
+                host=data['host'],
+                username=data['username'],
+                password=data['password']
+            )
+            start_monitoring()
+            return Response({'message': 'Connected Successfully!'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Cannot connect to remote server!'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class PauseMonitoringView(APIView):
+    def post(self, request):
+        pause_monitoring()
+        return Response({'message': 'Live monitoring Pause'}, status=status.HTTP_200_OK)
+
+class DisconnectMonitoringView(APIView):
+    def post(self, request):
+        disconnect_ssh()
+        return Response({'Remote server disconnected successfully!'}, status=status.HTTP_200_OK)
+
+class PacketListView(ListAPIView):
+    queryset = Packets.objects.all().order_by('-timestamp')
+    serializer_class = PacketsSerializer
+

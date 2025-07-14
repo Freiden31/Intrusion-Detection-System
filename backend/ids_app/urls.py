@@ -6,7 +6,11 @@ from .views import (
     ActivateUserView, 
     LoginView, 
     RequestPasswordResetView, 
-    PasswordResetConfirmView
+    PasswordResetConfirmView,
+    StartMonitoringView,
+    PauseMonitoringView,
+    DisconnectMonitoringView,
+    PacketListView
 )
 
 urlpatterns = [
@@ -19,7 +23,16 @@ urlpatterns = [
 
     # Reset Password Path 
     path('password_reset/', RequestPasswordResetView.as_view(), name='password_reset'),
-    path('confirm_password/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='confirm_password')
+    path('confirm_password/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='confirm_password'),
+
+    # Monitoring buttons control
+    path('start/', StartMonitoringView.as_view(), name='start'),
+    path('pause/', PauseMonitoringView.as_view(), name='pause'),
+    path('disconnect/', DisconnectMonitoringView.as_view(), name='disconnect'),
+
+    # Display packets data
+    path('pakets/', PacketListView.as_view(), name='packets')
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

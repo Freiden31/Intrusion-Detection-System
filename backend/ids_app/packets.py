@@ -162,6 +162,8 @@ def compute_flow_features(pkts):
         'packet_legnth_std': np.std(lengths),
         'packcet_length_vairiance': np.var(lengths),
         'avg_packet_size': np.mean(lengths),
+        'total_bytes': np.sum(lengths),
+        'total_mb': round(np.sum(lengths) / (1024, 1024), 4),
         'avg_fwd_segment_size': fwd_len_mean,
         'avg_bwd_segment_size': bwd_len_mean,
         'subflow_fwd_bytes': subflow_fwd_bytes,
@@ -230,3 +232,21 @@ def monitoring_loop():
                 **features
             )
         time.sleep(1)
+
+def start_monitoring():
+    global monitoring_active, monitor_thread
+    setup_ssh()
+    monitoring_active = True
+    monitor_thread = threading.Thread(target=monitoring_loop)
+    monitor_thread.start()
+
+def pause_monitoring():
+    global monitoring_active
+    monitoring_active = False
+
+def disconnect_ssh():
+    global monitoring_active, ssh_client
+    monitoring_active = False
+    if ssh_client:
+        ssh_client.close()
+        ssh_client = None
